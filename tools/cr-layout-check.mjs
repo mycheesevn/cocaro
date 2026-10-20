@@ -1,11 +1,17 @@
 /**
  * Cờ Ca-rô layout fixture: boots the production build (next start) as a
- * guest and measures board geometry across Play / Daily puzzle / Setup
- * views, desktop + mobile. Asserts the family shell invariants:
+ * guest and measures board geometry across Play / Daily puzzle / Setup /
+ * CvC (launched from Setup) / Library lesson views, desktop + mobile,
+ * plus boot checks (no h-overflow) for the Rooms / Correspondence /
+ * Community list views. Asserts the family shell invariants:
  *  - every board renders through .cr-board-area > .cr-board-fit,
  *  - the board is square, fully inside the viewport, same size in
  *    every board view,
  *  - no page-level horizontal overflow, no unfiltered console errors.
+ * The RoomMatch board is NOT guest-fixtureable (needs a signed-in room
+ * member); it renders through the same .cr-board-area > .cr-board-fit
+ * chain (components/caro/RoomMatchView.tsx) whose geometry is asserted
+ * here for every other view.
  * Usage: node tools/cr-layout-check.mjs [baseUrl]
  */
 import { chromium } from "playwright-core";
@@ -66,8 +72,27 @@ async function measure(browser, viewport, tag) {
   await openMode(3); // setup
   views.setup = await grab();
   await page.screenshot({ path: `/tmp/cr-layout-${tag}-setup.png` });
+  // CvC: launched from the Setup start form (family rule: CvC lives only
+  // inside Setup). .cr-setup-actions order: Start, CvC, Reset, Clear.
+  await page.evaluate(() => {
+    document.querySelectorAll(".cr-setup-actions button")[1]?.click();
+  });
+  await page.waitForTimeout(1200);
+  views.cvc = await grab();
+  await page.screenshot({ path: `/tmp/cr-layout-${tag}-cvc.png` });
+  await openMode(2); // library — open the first unlocked lesson for its board
+  await page.evaluate(() => {
+    document.querySelector(".cr-lib-lesson:not([disabled])")?.click();
+  });
+  await page.waitForTimeout(900);
+  views.library = await grab();
+  await page.screenshot({ path: `/tmp/cr-layout-${tag}-library.png` });
   await openMode(6); // rooms (list view, no board — boot check only)
   views.rooms = await grab();
+  await openMode(7); // correspondence (list view — boot check only)
+  views.corr = await grab();
+  await openMode(9); // community puzzles (list view — boot check only)
+  views.community = await grab();
   await page.close();
 
   const real = errors.filter(
@@ -89,7 +114,7 @@ const check = (cond, msg) => {
 for (const [tag, vp] of [["desktop", { width: 1440, height: 900 }], ["mobile", { width: 390, height: 844 }]]) {
   const { views, real } = await measure(browser, vp, tag);
   console.log(`--- ${tag} ${vp.width}x${vp.height} ---`);
-  for (const v of ["play", "puzzle", "setup"]) {
+  for (const v of ["play", "puzzle", "setup", "cvc", "library"]) {
     const m = views[v];
     check(!!m.boardFit, `${tag}/${v}: board-fit present`);
     if (!m.boardFit) continue;
@@ -100,10 +125,12 @@ for (const [tag, vp] of [["desktop", { width: 1440, height: 900 }], ["mobile", {
       `${tag}/${v}: board not clipped horizontally (right=${m.boardFit.right}/${m.innerW})`);
     check(m.bodyScrollW <= m.innerW + 1, `${tag}/${v}: no page h-overflow (${m.bodyScrollW}/${m.innerW})`);
   }
-  const sizes = ["play", "puzzle", "setup"].map((v) => views[v].boardFit?.w ?? -1);
+  const sizes = ["play", "puzzle", "setup", "cvc", "library"].map((v) => views[v].boardFit?.w ?? -1);
   check(Math.max(...sizes) - Math.min(...sizes) <= 2,
     `${tag}: board same size across views (${sizes.join("/")})`);
   check(views.rooms.bodyScrollW <= views.rooms.innerW + 1, `${tag}/rooms: boots, no h-overflow`);
+  check(views.corr.bodyScrollW <= views.corr.innerW + 1, `${tag}/corr: boots, no h-overflow`);
+  check(views.community.bodyScrollW <= views.community.innerW + 1, `${tag}/community: boots, no h-overflow`);
   check(real.length === 0, `${tag}: no console/page errors${real.length ? " — " + real.slice(0, 3).join(" | ") : ""}`);
 }
 await browser.close();
