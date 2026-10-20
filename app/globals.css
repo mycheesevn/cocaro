@@ -1,0 +1,2241 @@
+:root {
+  --bg: #101418;
+  --panel: #1a2129;
+  --panel-2: #232c36;
+  --ink: #f0e9d8;
+  --muted: #a8b0bc;
+  --accent: #2fb3e8;
+  --accent-2: #17a398;
+  --danger: #e03131;
+  --border: #33404d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Noto Sans", sans-serif;
+  background: radial-gradient(1200px 800px at 50% -10%, #16303c 0%, var(--bg) 60%);
+  color: var(--ink);
+  min-height: 100dvh;
+}
+
+/* ---------- page frame: the play view's column inside the .cr-app
+   frame (PacClone pattern) — the frame owns height/padding ---------- */
+.cr-page {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cr-brand {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+}
+
+.cr-title {
+  margin: 0;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cr-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.cr-select {
+  background: var(--panel-2);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 0.9rem;
+  max-width: 230px;
+}
+
+.cr-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.cr-btn {
+  background: var(--panel-2);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.cr-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.cr-btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #052a38;
+  font-weight: 600;
+}
+
+.cr-btn-rush {
+  background: linear-gradient(135deg, #0e7fa8, #17a398);
+  border-color: #7fd4f2; color: #fff; font-weight: 800;
+}
+
+.cr-lang {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cr-lang button {
+  background: var(--panel-2);
+  color: var(--muted);
+  border: none;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cr-lang button.active {
+  background: var(--accent);
+  color: #221a08;
+}
+
+/* ---------- status / thinking ---------- */
+.cr-status {
+  flex-shrink: 0;
+  text-align: center;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cr-status-over {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.cr-status-thinking {
+  border-color: var(--accent-2);
+  background: linear-gradient(100deg, var(--panel) 30%, #1e3325 50%, var(--panel) 70%);
+  background-size: 200% 100%;
+  animation: think-shimmer 1.6s linear infinite;
+  color: #bdf0c8;
+}
+
+@keyframes think-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.cr-thinking {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cr-think-meta {
+  font-weight: 400;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.cr-dots span {
+  animation: dot-blink 1.2s infinite;
+  display: inline-block;
+}
+
+.cr-dots span:nth-child(2) { animation-delay: 0.2s; }
+.cr-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dot-blink {
+  0%, 60%, 100% { opacity: 0.2; }
+  30% { opacity: 1; }
+}
+
+.cr-spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid rgba(47, 158, 68, 0.25);
+  border-top-color: var(--accent-2);
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+.cr-spinner-lg {
+  width: 46px;
+  height: 46px;
+  border-width: 5px;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6));
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- layout ---------- */
+.cr-layout {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 14px;
+}
+
+/* Room match: the board column — board area on top, the actions row
+   (reactions / resign / cancel) directly under the board, PacClone-style. */
+.cr-room-board-col {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.cr-board-area {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.cr-board-fit {
+  position: relative;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 100%;
+}
+
+.cr-board-fit.shake-big {
+  animation: board-shake-big 0.7s ease;
+}
+@keyframes board-shake-big {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(-10px, 4px) rotate(-0.6deg); }
+  30% { transform: translate(9px, -5px) rotate(0.5deg); }
+  45% { transform: translate(-7px, 3px) rotate(-0.4deg); }
+  60% { transform: translate(6px, -3px) rotate(0.3deg); }
+  75% { transform: translate(-4px, 2px); }
+}
+.cr-mate-flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background: radial-gradient(
+    circle,
+    rgba(255, 215, 0, 0.55) 0%,
+    rgba(255, 215, 0, 0) 70%
+  );
+  animation: mate-flash 1.2s ease forwards;
+}
+@keyframes mate-flash {
+  0% { opacity: 0; }
+  25% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.cr-board-fit.shake {
+  animation: board-shake 0.4s ease;
+}
+
+/* ---------- live eval bar (beside the board, PacClone pattern) ---------- */
+.cr-board-with-eval {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 10px;
+  /* Takes the column space left after the clock rows (if any). */
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  max-width: 100%;
+}
+.cr-evalbar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex-shrink: 0;
+  padding: 2px 0;
+}
+.cr-evalbar {
+  position: relative;
+  flex: 1;
+  width: 14px;
+  border-radius: 7px;
+  overflow: hidden;
+  background: #141414; /* top side = black */
+  border: 1px solid #3a3a3a;
+}
+.cr-evalbar.flipped {
+  background: #e8e0d0; /* top side = white */
+}
+.cr-evalbar-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--fill);
+  background: linear-gradient(to top, #cfc6b4, #ffffff); /* bottom = white */
+  transition: height 0.5s ease;
+}
+.cr-evalbar.flipped .cr-evalbar-fill {
+  background: linear-gradient(to top, #000, #3d3d3d); /* bottom = black */
+}
+.cr-evalbar-label {
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #9a9a9a;
+  margin-top: 5px;
+}
+
+/* ---------- board-size picker chips ---------- */
+.cr-size-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.cr-size-btn {
+  min-width: 64px;
+}
+.cr-size-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #052a38;
+  font-weight: 700;
+}
+
+/* ---------- hint rings ---------- */
+.cr-hint-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cr-hint-pulse 1s ease-in-out infinite;
+}
+@keyframes cr-hint-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.cr-hint-toast {
+  position: fixed;
+  bottom: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 212, 59, 0.96);
+  color: #221a08;
+  font-weight: 700;
+  padding: 10px 18px;
+  border-radius: 12px;
+  z-index: 60;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  animation: cr-pop 0.3s ease;
+}
+
+/* ---------- blitz clocks ---------- */
+.cr-board-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-width: 100%;
+}
+.cr-clocr-row {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0;
+  flex-shrink: 0;
+}
+.cr-clock {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 4px 16px;
+  border-radius: 10px;
+  background: var(--panel-2, #262019);
+  border: 1px solid var(--border, #3a2f22);
+  color: var(--ink, #f3e9d7);
+}
+.cr-clock.active {
+  border-color: #ffd43b;
+  color: #ffd43b;
+}
+.cr-clock.low {
+  color: #ff8787;
+  border-color: #ff8787;
+}
+
+@keyframes board-shake {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  20% { transform: translate(-8px, 5px) rotate(-0.5deg); }
+  40% { transform: translate(7px, -4px) rotate(0.5deg); }
+  60% { transform: translate(-5px, 3px) rotate(-0.3deg); }
+  80% { transform: translate(4px, -2px) rotate(0.2deg); }
+}
+
+.cr-board-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.cr-board-area.is-thinking .cr-board-svg {
+  filter: saturate(0.75) brightness(0.82);
+  transition: filter 0.25s ease;
+}
+
+.cr-think-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* ---------- fight animations ---------- */
+.fight-badge {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: badge-pop 1.5s ease-out forwards;
+}
+
+@keyframes badge-pop {
+  0% { transform: scale(0.2); opacity: 0; }
+  18% { transform: scale(1.25); opacity: 1; }
+  32% { transform: scale(1); }
+  75% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.1); opacity: 0; }
+}
+
+.cr-mate-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.cr-mate-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg, #a61e1e, #e03131);
+  border: 3px solid #ffd43b;
+  border-radius: 18px;
+  padding: 18px 34px;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: #fff;
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 12px 44px rgba(224, 49, 49, 0.55);
+  animation: mate-zoom 0.7s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+
+.cr-mate-trophy {
+  animation: crown-bounce 0.9s ease-in-out 0.5s infinite;
+}
+
+.cr-mate-trophy svg {
+  width: 46px;
+  height: 46px;
+  display: block;
+}
+
+.cr-promo-piece {
+  width: 46px;
+  height: 46px;
+  display: block;
+  margin: 0 auto;
+}
+
+.cr-cap-piece {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.cr-clocr-king {
+  width: 17px;
+  height: 17px;
+  display: inline-block;
+  vertical-align: -3px;
+}
+
+@keyframes mate-zoom {
+  0% { transform: scale(0.2) rotate(-6deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+@keyframes crown-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Big "CHECK!" banner (optional user setting — off by default, PacClone
+   pattern): flashes mid-board on a checking move, then fades out. */
+.cr-checr-banner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 6;
+  animation: cr-checr-flash 1s ease forwards;
+}
+
+.cr-checr-banner span {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #fff;
+  background: rgba(178, 34, 34, 0.9);
+  border: 2px solid #ffd43b;
+  border-radius: 16px;
+  padding: 10px 26px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+
+@keyframes cr-checr-flash {
+  0% { opacity: 0; transform: scale(0.6); }
+  18% { opacity: 1; transform: scale(1.1); }
+  30% { transform: scale(1); }
+  78% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1); }
+}
+
+/* ---------- promotion dialog ---------- */
+.cr-promo-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 14, 18, 0.55);
+  border-radius: 12px;
+  z-index: 5;
+}
+
+.cr-promo-dialog {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 22px;
+  text-align: center;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+  animation: mate-zoom 0.3s ease-out both;
+}
+
+.cr-promo-dialog p {
+  margin: 0 0 12px;
+  font-weight: 600;
+}
+
+.cr-promo-choices {
+  display: flex;
+  gap: 10px;
+}
+
+.cr-promo-choices button {
+  width: 62px;
+  height: 62px;
+  font-size: 2.4rem;
+  line-height: 1;
+  background: var(--panel-2);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  color: var(--ink);
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+
+.cr-promo-choices button:hover {
+  transform: translateY(-3px) scale(1.06);
+  border-color: var(--accent);
+}
+
+/* ---------- side panel ---------- */
+.cr-panel {
+  width: 330px;
+  flex-shrink: 0;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.cr-panel section h2 {
+  margin: 0 0 6px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+/* Stacked sections in the height-locked scrolling room panel keep their
+   natural height (family rule — PacClone's flex:1 overlap trap): the
+   panel scrolls as a whole, sections never compress over each other. */
+.cr-room-side > * { flex-shrink: 0; }
+
+.cr-stats {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85rem;
+}
+
+.cr-captured-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 0.9rem;
+}
+
+.cr-captured-label {
+  color: var(--muted);
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.cr-captured-pieces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  justify-content: flex-end;
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.cr-moves {
+  flex: 1;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cr-log {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.65;
+  overflow-y: auto;
+  max-height: 100%;
+  font-variant-numeric: tabular-nums;
+}
+
+.cr-log-num {
+  color: var(--muted);
+  margin-right: 4px;
+}
+
+.cr-log-empty {
+  color: var(--muted);
+}
+
+.cr-help ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Board views inside scroll containers (puzzle, correspondence games, room
+   matches): make the whole ancestor chain a definite-height flex column so
+   the board sizes by height — the same sizing system as the play view —
+   without restructuring each view. The :has() selectors only engage when a
+   board is actually present; list views are untouched. */
+@media (min-width: 921px) {
+  .cr-scroll-area:has(.cr-board-area) {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+  }
+  .cr-scroll-area:has(.cr-board-area) *:has(.cr-board-area) {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  .cr-scroll-area :has(> .cr-board-area) > .cr-board-area {
+    flex: 1 0 auto;
+  }
+  /* Board views get a wider content column so the height-driven board
+     lands at the same size as the play board, and tighter padding so the
+     650px board column fits the viewport height. */
+  .cr-scroll-area .cr-view:has(.cr-board-area) {
+    max-width: 1000px;
+    padding: 4px;
+  }
+  /* When a match takes over the view, its side panel carries the back
+     button — hide the view-level one to reclaim its 29px for the board. */
+  .cr-scroll-area .cr-view:has(.cr-room-match) > button.cr-btn {
+    display: none;
+  }
+
+  /* ---------- board size uniformity (all views = play view size) ----------
+     Playwright-measured at 700/800/900px viewport heights: the play view's
+     board always resolves to exactly `100dvh - 158px` on desktop (the 158px
+     is the fixed chrome: header + status strip + gaps + board padding).
+     The play view is the canonical reference and is never touched here. */
+  /* Views whose container offers MORE height than the play view's
+     (puzzle/rush/setup/library/history — these own their .cr-page root and
+     sit outside .cr-scroll-area): clamp the fit down to the play-view board
+     size. Width follows via aspect-ratio. The cap equals the play view's own
+     computed size by construction, so the play view is unaffected. */
+  .cr-board-fit {
+    max-height: calc(100dvh - 158px);
+  }
+  /* Room match + corr active game: two-column like the play view — the
+     board column takes the full height (the fit clamps to the 642px play
+     size via the global max-height above); the actions row sits under the
+     board inside that column, and the remaining side elements (vs header,
+     status, move list, comments) live in the side panel. This beats the
+     :has() column fixup above by source order at equal specificity. */
+  .cr-scroll-area .cr-room-match > .cr-room-match-main {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 auto;
+    min-height: 0;
+    gap: 12px;
+    align-items: stretch;
+  }
+  .cr-scroll-area .cr-room-match .cr-room-match-main > .cr-room-board-col {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+/* ---------- narrow screens ---------- */
+@media (max-width: 920px) {
+  /* NOTE: .cr-app is defined LATER in this file than this media block, so
+     its mobile overrides live in the last media block instead — same
+     specificity means the later rule would win and silently undo them. */
+
+  .cr-layout {
+    flex-direction: column;
+    /* Phones: tall content (board + panel) scrolls vertically; the board
+       stays width-driven and fully visible at the top. */
+    overflow-y: auto;
+    /* Nothing inside board + panel may push the page wider than the
+       screen (which makes the whole view look shifted/zoomed). */
+    overflow-x: hidden;
+  }
+
+  .cr-scroll-area {
+    overflow: visible;
+  }
+
+  .cr-board-area {
+    /* Block (not flex) on phones: plain block layout sizes width:100% +
+       aspect-ratio predictably on mobile Safari. */
+    display: block;
+    padding: 2px;
+  }
+
+  /* iOS Safari auto-zooms the page when a focused input/textarea/select
+     has font-size < 16px, and the zoom sticks afterwards — in a room this
+     made the board look enlarged and shifted as soon as a player tapped
+     the comment box. Force 16px on phones to prevent the zoom. */
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+
+  .cr-board-fit {
+    width: 100%;
+    height: auto;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  /* Room match + corr active game stack vertically on phones: full-width
+     board on top (width-driven, fully visible), side panel below; the page
+     scrolls. The board-area sizes from the viewport (not the nested
+     .cr-view padding) so the board is exactly the play view's 366px. */
+  .cr-room-match-main {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .cr-room-match-main > .cr-board-area {
+    width: calc(100vw - 20px);
+    /* align-self (not margin auto): truly centers even when the item is
+       wider than the container, so the board lands at x=10 like the play
+       view instead of sticking out to the right. */
+    align-self: center;
+  }
+  /* On phones the view-level back button sits at the top; the panel's
+     duplicate is hidden to avoid redundancy. */
+  .cr-room-side .cr-room-exit {
+    display: none;
+  }
+
+  /* Eval bar goes horizontal above the board on phones. */
+  .cr-board-with-eval {
+    flex-direction: column;
+    height: auto;
+    align-items: stretch;
+  }
+  .cr-evalbar-wrap {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto 4px;
+    padding: 0 2px;
+  }
+  .cr-evalbar {
+    flex: 1;
+    width: auto;
+    height: 10px;
+  }
+  .cr-evalbar-fill {
+    top: 0;
+    bottom: auto;
+    height: 100%;
+    width: var(--fill);
+    transition: width 0.5s ease;
+  }
+  .cr-evalbar-label {
+    margin-top: 0;
+    min-width: 44px;
+    text-align: right;
+  }
+
+  .cr-panel {
+    width: 100%;
+    max-height: none;
+  }
+
+  .cr-moves .cr-log {
+    max-height: 220px;
+  }
+
+  .cr-mate-banner {
+    font-size: 1.3rem;
+    padding: 12px 20px;
+  }
+}
+
+/* ---------- app shell nav ---------- */
+/* Page frame (PacClone pattern): one locked 100dvh column holding the
+   topbar, the current view, and the footer. */
+.cr-app {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 10px 16px 12px;
+  /* In standalone PWA mode the app extends under the iPhone status bar /
+     home indicator — keep content clear of them. */
+  padding-top: max(10px, calc(env(safe-area-inset-top) + 20px));
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  gap: 8px;
+  overflow: hidden;
+}
+.cr-footer {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--muted, #888);
+  padding: 4px 0 2px;
+  flex-shrink: 0;
+  user-select: none;
+}
+.cr-btn-sm { padding: 6px 12px; font-size: 13px; }
+
+/* ---------- engagement views ---------- */
+/* Scrollable top-aligned area for non-play views (PacClone pattern).
+   Never put a long list inside .cr-board-area: its centering clips the
+   top of overflowing content with no way to scroll back. */
+.cr-scroll-area {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  padding: 4px;
+  width: 100%;
+}
+.cr-view { max-width: 720px; margin: 0 auto; padding: 24px 16px; width: 100%; }
+.cr-view h2 { margin: 0 0 16px; }
+.cr-streak { font-size: 18px; }
+.cr-msg { color: var(--accent-2); font-weight: 600; }
+.cr-hint { color: var(--muted); font-size: 13px; }
+.cr-cal { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
+.cr-cal-day {
+  display: flex; flex-direction: column; align-items: center;
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 10px; font-size: 18px;
+}
+.cr-cal-day small { font-size: 11px; color: var(--muted); }
+.cr-board-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.cr-lb-row {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 14px;
+}
+.cr-challenge-highlight {
+  animation: cr-challenge-flash 1s ease-in-out 3;
+  border-color: #ffd54a;
+  box-shadow: 0 0 12px rgba(255, 213, 74, 0.6);
+}
+@keyframes cr-challenge-flash {
+  0%, 100% { background: transparent; }
+  50% { background: rgba(255, 213, 74, 0.25); }
+}
+.cr-lb-rank { font-weight: 700; color: var(--accent); min-width: 36px; }
+.cr-lb-name { flex: 1; }
+.cr-lb-title { color: var(--muted); font-size: 13px; }
+.cr-lb-xp { font-weight: 700; }
+
+/* ---------- leaderboard tabs + site statistics (PacClone standard) ---------- */
+.cr-lb-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+.cr-lb-tabs button {
+  flex: 1; padding: 10px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--panel-2);
+  color: var(--ink); font: inherit; font-weight: 600; font-size: 0.9rem;
+  cursor: pointer;
+}
+.cr-lb-tabs button.active { border-color: var(--accent); background: var(--panel); }
+.cr-stat-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px; margin-bottom: 14px;
+}
+.cr-stat-card {
+  background: var(--panel-2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 12px;
+}
+.cr-stat-card .num { font-size: 1.4rem; font-weight: 700; }
+.cr-stat-card .lbl { font-size: 0.82rem; font-weight: 600; margin-top: 2px; }
+.cr-stat-card .sub { font-size: 0.75rem; opacity: 0.6; margin-top: 2px; }
+.cr-stat-subject { margin-bottom: 8px; }
+.cr-chart {
+  display: flex; align-items: stretch; gap: 3px; height: 170px;
+  padding: 10px 2px 0; border: 1px solid var(--border);
+  border-radius: 10px; background: var(--panel-2);
+}
+.cr-bar-col {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end; min-width: 0;
+}
+.cr-bar-val { font-size: 0.62rem; height: 14px; line-height: 14px; }
+.cr-bar {
+  width: 70%; max-width: 30px; min-height: 2px;
+  background: var(--accent); border-radius: 3px 3px 0 0;
+}
+.cr-bar-label { font-size: 0.6rem; opacity: 0.6; margin-top: 4px; white-space: nowrap; }
+
+/* ---------- video export modal ---------- */
+.cr-seg { display: flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.cr-seg button {
+  flex: 1; padding: 8px 10px; border: 0; background: var(--panel-2);
+  color: var(--ink); font: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+}
+.cr-seg button.active { background: var(--accent); color: #fff; }
+.cr-progress {
+  height: 10px; border-radius: 999px; background: var(--panel-2);
+  border: 1px solid var(--border); overflow: hidden; margin: 10px 0 4px;
+}
+.cr-progress-fill { height: 100%; background: var(--accent); transition: width 0.2s linear; }
+.cr-video-row { display: flex; align-items: center; gap: 12px; margin: 12px 0; }
+.cr-video-label { font-size: 0.85rem; font-weight: 600; }
+.cr-video-row .cr-seg { flex: 1; }
+.cr-video-mic { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; margin: 10px 0; cursor: pointer; }
+.cr-video-preview {
+  width: 100%; max-height: 46vh; border-radius: 10px;
+  background: #000; margin: 8px 0 4px;
+}
+.cr-form-error { color: #e5484d; font-size: 0.85rem; margin: 6px 0; }
+
+/* ---------- board setup editor ---------- */
+.cr-setup-title {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+.cr-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.cr-palbtn {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.cr-palbtn svg {
+  width: 36px;
+  height: 36px;
+  display: block;
+}
+.cr-palbtn.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent);
+  background: #2d3742;
+}
+.cr-palbtn-tool {
+  width: auto;
+  min-width: 44px;
+  padding: 6px 10px;
+  gap: 6px;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+.cr-setup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cr-setup-form .cr-select {
+  width: 100%;
+  max-width: none;
+}
+.cr-cvc-result {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.cr-cvc-moves {
+  overflow-y: auto;
+  min-height: 0;
+  max-height: 300px;
+  font-variant-numeric: tabular-nums;
+}
+.cr-cvc-move-row {
+  display: grid;
+  grid-template-columns: 2.6em 1fr 1fr;
+  gap: 0.4em;
+  padding: 0.12em 0;
+}
+.cr-cvc-move-no {
+  opacity: 0.6;
+}
+.cr-setup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.cr-setup-error {
+  text-align: left;
+  margin-top: 10px;
+}
+
+/* ---------- playbook library ---------- */
+.cr-lib-home {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 2px 24px;
+}
+.cr-lib-hero h2 { margin: 0 0 4px; font-size: 1.25rem; }
+.cr-lib-hero p { margin: 0 0 10px; color: var(--muted); font-size: 0.92rem; }
+.cr-lib-progress {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.85rem; color: var(--muted);
+}
+.cr-lib-bar {
+  flex: 1; height: 8px; border-radius: 999px;
+  background: var(--panel-2); border: 1px solid var(--border); overflow: hidden;
+}
+.cr-lib-fill {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, #ffd43b, #fab005);
+  transition: width 0.4s ease;
+}
+.cr-lib-chapters { display: flex; flex-direction: column; gap: 10px; }
+.cr-lib-chapter {
+  display: flex; align-items: center; gap: 12px; text-align: left;
+  padding: 14px; border-radius: 14px;
+  background: var(--panel); border: 1px solid var(--border);
+  color: var(--ink); font: inherit; cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+.cr-lib-chapter:not(:disabled):hover { transform: translateY(-1px); border-color: var(--accent-2); }
+.cr-lib-chapter.is-done { border-color: rgba(255, 212, 59, 0.5); }
+.cr-lib-chapter.is-locked { opacity: 0.55; cursor: not-allowed; }
+.cr-lib-cicon {
+  font-size: 1.7rem; width: 48px; height: 48px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 12px; background: var(--panel-2); border: 1px solid var(--border);
+}
+.cr-lib-cbody { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.cr-lib-ctitle { font-weight: 700; font-size: 1rem; }
+.cr-lib-ctitle em { font-style: normal; color: #ffd43b; }
+.cr-lib-csub { font-size: 0.85rem; color: var(--muted); }
+.cr-lib-cmeta { font-size: 0.78rem; color: var(--accent-2); font-weight: 600; }
+.cr-lib-lgo { font-size: 1.4rem; color: var(--muted); flex-shrink: 0; }
+.cr-lib-back {
+  align-self: flex-start; background: none; border: none;
+  color: var(--accent-2); font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; padding: 4px 0;
+}
+.cr-lib-chead { display: flex; gap: 12px; align-items: center; }
+.cr-lib-chead h2 { margin: 0; font-size: 1.15rem; }
+.cr-lib-chead p { margin: 2px 0 0; color: var(--muted); font-size: 0.88rem; }
+.cr-lib-lessons { display: flex; flex-direction: column; gap: 8px; }
+.cr-lib-lesson {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border-radius: 12px;
+  background: var(--panel); border: 1px solid var(--border);
+  color: var(--ink); font: inherit; cursor: pointer; text-align: left;
+}
+.cr-lib-lesson:not(:disabled):hover { border-color: var(--accent-2); }
+.cr-lib-lesson.is-done { border-color: rgba(47, 158, 68, 0.55); }
+.cr-lib-lesson.is-locked { opacity: 0.5; cursor: not-allowed; }
+.cr-lib-lnum {
+  width: 30px; height: 30px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: var(--panel-2);
+  border: 1px solid var(--border); font-weight: 700; font-size: 0.9rem;
+}
+.cr-lib-ltitle { flex: 1; font-weight: 600; }
+/* Lesson player */
+.cr-lib-topbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.cr-lib-stepcount { font-size: 0.82rem; color: var(--muted); font-weight: 600; }
+.cr-lib-lesson-title { margin: 2px 0 0; font-size: 1.05rem; }
+.cr-lib-card {
+  margin-top: 10px; padding: 12px 14px; border-radius: 12px;
+  background: var(--panel-2); border: 1px solid var(--border);
+  font-size: 0.93rem; line-height: 1.5;
+}
+.cr-lib-card p { margin: 0; }
+.cr-lib-card.is-quiz { border-color: #ffd43b; box-shadow: 0 0 14px rgba(255, 212, 59, 0.18); }
+.cr-lib-card.is-explore { border-color: var(--accent-2); }
+.cr-lib-card.is-outro { border-color: rgba(47, 158, 68, 0.5); }
+.cr-lib-wrong { margin-top: 8px !important; color: #ff8787; font-weight: 600; font-size: 0.88rem; }
+.cr-lib-controls { margin-top: 10px; display: flex; gap: 8px; align-items: center; }
+.cr-lib-controls button {
+  padding: 9px 14px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--panel-2);
+  color: var(--ink); font: inherit; font-size: 0.92rem; font-weight: 600; cursor: pointer;
+}
+.cr-lib-controls button:disabled { opacity: 0.4; cursor: not-allowed; }
+.cr-lib-primary {
+  background: var(--accent) !important; border-color: var(--accent) !important;
+  color: #221a08 !important; flex: 1;
+}
+.cr-lib-quizbadge { flex: 1; text-align: center; font-weight: 700; color: #ffd43b; font-size: 0.92rem; }
+.cr-lib-moves { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+.cr-lib-chip {
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--panel);
+  color: var(--muted); font-size: 0.82rem; font-weight: 600; cursor: pointer;
+}
+.cr-lib-chip.is-past { color: var(--ink); border-color: var(--accent-2); }
+.cr-lib-chip.is-cur { background: var(--accent); border-color: var(--accent); color: #221a08; }
+.cr-lib-complete { margin-top: 12px; width: 100%; padding: 12px; border-radius: 12px; font-size: 1rem; cursor: pointer; }
+.cr-lib-celebrate {
+  margin-top: 12px; text-align: center; padding: 16px 12px;
+  border-radius: 14px; background: var(--panel-2);
+  border: 1px solid rgba(255, 212, 59, 0.5);
+}
+.cr-lib-celebrate-emoji { font-size: 2.4rem; animation: cr-lib-bounce 0.9s ease infinite alternate; }
+@keyframes cr-lib-bounce {
+  from { transform: translateY(0) scale(1); }
+  to { transform: translateY(-8px) scale(1.08); }
+}
+.cr-lib-celebrate p { margin: 8px 0 12px; color: var(--muted); }
+.cr-lib-celebrate .cr-lib-controls { justify-content: center; }
+
+/* ---------- rooms (PacClone parity) ---------- */
+.cr-row-gap {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin: 10px 0;
+}
+.cr-btn-danger {
+  background: #b3261e !important; border-color: #b3261e !important; color: #fff !important;
+}
+.cr-select-sm { width: auto; flex: 0 0 auto; }
+.cr-room-detail { display: flex; flex-direction: column; gap: 4px; }
+.cr-room-code-card {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 14px; border-radius: 14px;
+  background: var(--panel); border: 1px solid var(--border);
+}
+.cr-room-code-big {
+  font-size: 1.7rem; font-weight: 800; letter-spacing: 0.22em; line-height: 1.15;
+}
+.cr-room-code-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.cr-room-section { margin-top: 14px; }
+.cr-room-section h4 { margin: 0 0 8px; font-size: 0.98rem; }
+.cr-rules-input { width: 100%; resize: vertical; margin-bottom: 8px; font: inherit; }
+.cr-member-list {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.cr-member-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 10px;
+  background: var(--panel); border: 1px solid var(--border);
+}
+.cr-member-avatar {
+  width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
+}
+.cr-member-avatar-fallback {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--panel-2); border: 1px solid var(--border);
+  font-weight: 700;
+}
+.cr-member-name { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cr-order-num { font-size: 0.8rem; font-weight: 700; color: var(--accent-2); }
+.cr-role-chip {
+  font-size: 0.72rem; font-weight: 600; color: var(--muted);
+  border: 1px solid var(--border); border-radius: 999px; padding: 2px 8px;
+  white-space: nowrap;
+}
+.cr-member-controls { display: flex; gap: 4px; }
+.cr-member-controls .cr-btn { padding: 4px 8px; }
+/* Match view additions */
+.cr-room-vs {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-weight: 700; font-size: 1rem; margin: 6px 0 2px; text-align: center;
+}
+.cr-room-vs-mid { color: var(--muted); font-weight: 600; font-size: 0.85rem; }
+.cr-result-panel {
+  margin: 8px 0; padding: 10px 12px; border-radius: 12px;
+  background: var(--panel-2); border: 1px solid rgba(255, 212, 59, 0.45);
+}
+.cr-xp-earned { margin: 0 0 6px; font-weight: 700; color: #ffd43b; }
+.cr-room-moves {
+  margin-top: 10px; max-height: 180px; overflow-y: auto;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--panel); padding: 8px 12px;
+  font-size: 0.9rem;
+}
+.cr-room-move-row {
+  display: grid; grid-template-columns: 34px 1fr 1fr; gap: 6px;
+  padding: 2px 0;
+}
+.cr-room-move-num { color: var(--muted); font-weight: 600; }
+/* Tournaments */
+.cr-tournaments { margin-top: 16px; }
+.cr-tournament {
+  margin-top: 10px; padding: 10px 12px; border-radius: 12px;
+  background: var(--panel); border: 1px solid var(--border);
+}
+.cr-tournament-head {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+  margin-bottom: 6px;
+}
+.cr-pairings { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+.cr-pairing {
+  display: flex; justify-content: space-between; gap: 8px;
+  padding: 6px 10px; border-radius: 8px;
+  background: var(--panel-2); border: 1px solid var(--border);
+  color: var(--ink); font: inherit; font-size: 0.86rem; text-align: left;
+}
+.cr-pairing:not(:disabled) { cursor: pointer; }
+.cr-pairing:not(:disabled):hover { border-color: var(--accent-2); }
+.cr-pairing:disabled { opacity: 0.75; cursor: default; }
+/* Guests */
+.cr-guest-banner {
+  padding: 10px 12px; border-radius: 12px;
+  background: var(--panel-2); border: 1px solid var(--accent-2);
+  font-size: 0.92rem;
+}
+.cr-invite-card {
+  padding: 14px; border-radius: 14px; margin-bottom: 14px;
+  background: var(--panel); border: 1px solid rgba(255, 212, 59, 0.55);
+  display: flex; flex-direction: column; gap: 6px; align-items: flex-start;
+}
+.cr-invite-card p { margin: 0; }
+
+/* ---------- game over panel ---------- */
+.cr-gameover {
+  position: absolute; inset: 0; display: flex;
+  align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.45); border-radius: 12px; z-index: 20;
+}
+.cr-gameover-card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px 32px; text-align: center;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.cr-gameover-card h3 { margin: 0 0 16px; font-size: 20px; }
+.cr-gameover-actions { display: flex; gap: 10px; justify-content: center; }
+
+/* ---------- rooms ---------- */
+.cr-room-form { display: flex; gap: 8px; align-items: center; margin: 12px 0; flex-wrap: wrap; }
+.cr-input {
+  background: var(--panel-2); border: 1px solid var(--border); color: var(--ink);
+  border-radius: 8px; padding: 8px 12px; font-size: 14px;
+}
+.cr-check { display: flex; align-items: center; gap: 6px; font-size: 14px; }
+.cr-room-row {
+  display: flex; justify-content: space-between; align-items: center; width: 100%;
+  background: var(--panel); border: 1px solid var(--border); color: var(--ink);
+  border-radius: 8px; padding: 10px 14px; cursor: pointer; font-size: 15px;
+}
+.cr-room-row code { color: var(--accent); font-weight: 700; }
+.cr-room-match { margin-top: 12px; }
+.cr-room-status {
+  text-align: center; font-weight: 700; font-size: 16px; margin-bottom: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;
+}
+.cr-viewers { font-size: 0.9rem; font-weight: 600; opacity: 0.8; }
+.cr-rematch-row {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin: 8px 0 4px;
+}
+.cr-auth-btns { display: flex; gap: 6px; }
+
+/* ---------- pagination & replay ---------- */
+.cr-pagination {
+  display: flex; gap: 6px; align-items: center; justify-content: center;
+  margin: 16px 0;
+}
+.cr-pagination button {
+  background: var(--panel-2); border: 1px solid var(--border); color: var(--ink);
+  border-radius: 6px; padding: 6px 10px; cursor: pointer;
+}
+.cr-pagination button:disabled { opacity: 0.4; cursor: default; }
+.cr-replay-controls {
+  display: flex; gap: 8px; align-items: center; justify-content: center;
+  margin-top: 12px;
+}
+.cr-toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--accent-2); color: #fff; font-weight: 700;
+  padding: 12px 24px; border-radius: 12px; z-index: 100;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+/* ---------- modal (challenge popup) ---------- */
+.cr-modal-root {
+  position: fixed; inset: 0; z-index: 90;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.cr-modal {
+  background: var(--panel, #1e1812); color: var(--ink, #f3e9d7);
+  border: 1px solid var(--border, #3a2f22);
+  border-radius: 16px; padding: 22px 26px; max-width: 420px; width: 100%;
+  text-align: center; box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+}
+.cr-modal h3 { margin: 0 0 16px; font-size: 1.15rem; }
+.cr-modal-actions { display: flex; gap: 10px; justify-content: center; }
+
+.cr-checr-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.cr-checr-toggle input {
+  margin-top: 2px;
+  accent-color: var(--accent);
+}
+
+/* ---------- profile modal ---------- */
+.cr-profile-modal {
+  max-width: 400px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  text-align: left;
+}
+.cr-profile-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.cr-profile-head h2 { margin: 0; text-align: left; }
+.cr-profile-avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.cr-profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--panel-2, #2a2118);
+  border: 1px solid var(--border, #3a2f22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+.cr-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cr-profile-modal .cr-field {
+  margin-bottom: 10px;
+}
+.cr-profile-readonly {
+  font-size: 0.85rem;
+  margin: 10px 0;
+  display: grid;
+  gap: 4px;
+}
+.cr-profile-save { width: 100%; margin-top: 6px; }
+.cr-profile-pw {
+  margin-top: 14px;
+  border-top: 1px solid var(--border, #3a2f22);
+  padding-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+.cr-profile-pw h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+.cr-ambassador-line {
+  background: #2b1f0e;
+  border: 1px solid #8a6d2f;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 10px 0;
+  color: #ffd97a;
+  font-weight: 600;
+  text-align: center;
+  font-size: 0.95rem;
+}
+.cr-referral {
+  border: 1px dashed var(--accent, #2fb3e8);
+  border-radius: 12px;
+  background: rgba(212, 160, 23, 0.08);
+  padding: 12px 14px;
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cr-referral h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+.cr-referral p {
+  margin: 0;
+  font-size: 0.88rem;
+}
+.cr-referral-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.cr-referral-code {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--accent, #2fb3e8);
+  background: rgba(0, 0, 0, 0.25);
+  padding: 6px 12px;
+  border-radius: 8px;
+  word-break: break-all;
+  max-width: 100%;
+}
+.cr-msg-error { color: #e0685c; }
+
+/* ---------- friends view ---------- */
+.cr-friends {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 12px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.cr-friends h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+.cr-friends h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+.cr-friend-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--panel-2, #2a2118);
+  border: 1px solid var(--border, #3a2f22);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.cr-friend-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cr-online-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #5a5348;
+  margin-right: 6px;
+  vertical-align: baseline;
+}
+.cr-online-dot.on {
+  background: #40c057;
+  box-shadow: 0 0 6px rgba(64, 192, 87, 0.8);
+}
+.cr-friend-sub {
+  font-size: 0.78rem;
+  color: var(--muted, #8a7f6a);
+  display: block;
+}
+.cr-challenge-highlight {
+  animation: cr-challenge-flash 1s ease-in-out 3;
+  border-color: #ffd54a;
+  box-shadow: 0 0 12px rgba(255, 213, 74, 0.6);
+}
+@keyframes cr-challenge-flash {
+  0%, 100% { background: transparent; }
+  50% { background: rgba(255, 213, 74, 0.15); }
+}
+.cr-room-order-btns {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* ---------- auth modal ---------- */
+.cr-modal h2 { margin: 0 0 12px; font-size: 1.1rem; text-align: center; }
+.cr-oauth {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.cr-oauth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  font-weight: 600;
+}
+.cr-or {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin: 10px 0;
+}
+.cr-or::before, .cr-or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.cr-error {
+  color: var(--danger, #e8604c);
+  font-size: 0.85rem;
+  margin: 6px 0;
+  text-align: center;
+}
+.cr-ok {
+  color: #69db7c;
+  font-size: 0.85rem;
+  margin: 6px 0;
+  text-align: center;
+}
+.cr-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  cursor: pointer;
+  font: inherit;
+  text-decoration: underline;
+}
+
+/* ---------- match social ---------- */
+.cr-social { margin-top: 12px; position: relative; }
+/* Reaction floaters render INSIDE the board container (.cr-board-fit) in
+ * RoomMatchView — never here in the panel — so they animate OVER the board
+ * (PacClone pattern). On mobile the panel stacks below the board, so
+ * panel-confined floaters would expire before ever reaching it. */
+.cr-reaction-float {
+  position: absolute;
+  bottom: 12%;
+  font-size: 2rem;
+  pointer-events: none;
+  z-index: 7;
+  animation: cr-reaction-float 2.2s ease-out forwards;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+}
+@keyframes cr-reaction-float {
+  0% { opacity: 0; transform: translateY(10px) scale(0.6); }
+  15% { opacity: 1; transform: translateY(0) scale(1.2); }
+  30% { transform: translateY(-8px) scale(1); }
+  75% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-90px) scale(0.9); }
+}
+/* Actions row directly under the board (PacClone .xq-room-match-actions):
+   reaction pill + guest teaser + resign/cancel. */
+.cr-room-match-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  min-height: 34px;
+}
+.cr-reaction-bar {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+.cr-reaction-btn {
+  background: none;
+  border: none;
+  font-size: 1.35rem;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 8px;
+  line-height: 1;
+}
+.cr-comments { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; max-height: 200px; overflow-y: auto; }
+.cr-comment {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 10px; font-size: 14px;
+  display: flex; gap: 8px; align-items: flex-start;
+}
+.cr-comment-avatar {
+  width: 28px; height: 28px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
+}
+.cr-comment-avatar-fallback {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--border); font-size: 16px;
+}
+.cr-comment-body { flex: 1; min-width: 0; }
+.cr-comment-meta {
+  display: flex; align-items: baseline; gap: 6px; margin-bottom: 2px;
+  font-size: 12px; color: var(--muted);
+}
+.cr-comment-meta strong { color: var(--text); font-size: 13px; }
+.cr-comment-move {
+  background: var(--accent-2); color: #fff; border-radius: 4px;
+  padding: 0 6px; font-size: 11px; font-weight: 600;
+}
+.cr-comment-time { margin-left: auto; white-space: nowrap; }
+.cr-comment-form { display: flex; gap: 6px; }
+.cr-comment-form .cr-input { flex: 1; }
+
+/* ---------- correspondence ---------- */
+.cr-view-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.cr-view-head h2 { margin: 0; }
+.cr-turn-badge {
+  background: var(--accent-2); color: #fff; font-weight: 700; font-size: 13px;
+  border-radius: 999px; padding: 3px 10px; white-space: nowrap;
+}
+.cr-corr-new {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px; margin-bottom: 14px;
+}
+.cr-corr-new h3 { margin: 0 0 10px; font-size: 15px; }
+
+/* ---------- daily puzzle ---------- */
+.cr-puzzle-title { font-size: 16px; color: var(--ink); margin: 4px 0 8px; }
+.cr-puzzle-fail {
+  margin-top: 12px; padding: 10px 14px; border-radius: 10px;
+  background: rgba(224, 49, 49, 0.14); border: 1px solid #e03131;
+  color: #ffb3b3; font-weight: 600; text-align: center;
+  animation: cr-shake 0.4s ease;
+}
+@keyframes cr-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+.cr-puzzle-solved {
+  margin-top: 12px; padding: 14px; border-radius: 12px; text-align: center;
+  background: rgba(47, 158, 68, 0.12); border: 1px solid var(--accent-2);
+  animation: cr-pop 0.45s ease;
+}
+@keyframes cr-pop {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.cr-puzzle-win { font-size: 18px; font-weight: 800; margin: 0 0 8px; }
+
+/* ---------- puzzle rush ---------- */
+.cr-rush-enter {
+  display: flex; align-items: center; gap: 10px; margin: 8px 0 4px; flex-wrap: wrap;
+}
+.cr-btn-rush {
+  background: linear-gradient(135deg, #7c2d12, #c2255c);
+  border-color: #ff8787; color: #fff; font-weight: 800;
+}
+.cr-rush-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  font-size: 17px; font-weight: 700; margin-bottom: 6px;
+}
+.cr-rush-time { font-variant-numeric: tabular-nums; }
+.cr-rush-lives { letter-spacing: 2px; }
+.cr-rush-score { font-size: 1.15rem; }
+.cr-rush-newbest { color: #ffd43b; }
+.cr-rush-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+
+/* ---------- app shell: topbar, identity menu, drawer (PacClone pattern) ---------- */
+.cr-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.cr-menu-btn {
+  background: var(--panel-2);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Quick action bar in the play view, right under the topbar
+   (PacClone pattern): undo · switch sides · hint · new game. */
+.cr-quick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.cr-quick .cr-btn {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+}
+
+.cr-quicr-spacer {
+  flex: 1;
+}
+
+.cr-btn-icon {
+  padding: 8px 10px;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.cr-account {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.cr-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.cr-chip {
+  background: rgba(255, 212, 59, 0.14);
+  border: 1px solid rgba(255, 212, 59, 0.45);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Facebook-style account button + dropdown menu */
+.cr-account-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ink);
+  padding: 4px 8px 4px 4px;
+  border-radius: 999px;
+  font: inherit;
+}
+
+.cr-account-btn:hover {
+  background: var(--panel-2);
+}
+
+.cr-account-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.cr-account-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cr-account-avatar.large {
+  width: 48px;
+  height: 48px;
+  font-size: 1.6rem;
+}
+
+/* Level-progress ring around the header avatar. */
+.cr-level-ring {
+  --p: 0;
+  width: 37px;
+  height: 37px;
+  border-radius: 50%;
+  padding: 2.5px;
+  flex-shrink: 0;
+  display: inline-flex;
+  background: conic-gradient(
+    #ffd43b calc(var(--p) * 1turn),
+    rgba(255, 255, 255, 0.14) 0
+  );
+  transition: background 0.4s ease;
+}
+
+.cr-level-ring .cr-account-avatar {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.cr-account-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cr-caret {
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+/* Unread-notification red dot on the identity button */
+.cr-dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fa5252;
+  border: 2px solid var(--panel);
+  z-index: 1;
+}
+
+.cr-badge {
+  margin-left: 6px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background: #fa5252;
+  color: #fff;
+  font-size: 11px;
+  line-height: 18px;
+  text-align: center;
+  padding: 0 5px;
+  font-weight: 700;
+}
+
+.cr-muted {
+  color: var(--muted);
+  font-size: 0.78rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cr-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+}
+
+.cr-account-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 95;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  min-width: 230px;
+  max-width: 320px;
+  padding: 8px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+  display: grid;
+  gap: 2px;
+}
+
+.cr-account-menu-head {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 6px;
+}
+
+.cr-account-menu-id {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cr-account-menu-id strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cr-account-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.92rem;
+  padding: 9px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.cr-account-menu-item:hover {
+  background: var(--panel-2);
+}
+
+/* Collapsible settings block inside the account/gear menu */
+.cr-account-menu-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  margin: 2px 0 6px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.cr-account-menu-settings .cr-input {
+  width: 100%;
+}
+
+.cr-account-menu-settings .cr-select {
+  width: 100%;
+  max-width: none;
+}
+
+/* ---------- slide-in menu drawer ---------- */
+.cr-drawer-root {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+}
+
+.cr-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.cr-drawer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(320px, 85vw);
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  animation: cr-drawer-in 0.22s ease;
+  box-shadow: 8px 0 32px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes cr-drawer-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.cr-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 1.05rem;
+}
+
+.cr-drawer-body {
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cr-drawer-body section h2 {
+  margin: 0 0 8px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.cr-drawer-modes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cr-drawer-modes button {
+  background: var(--panel-2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+
+.cr-drawer-modes button[data-active="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #221a08;
+}
+
+.cr-blog-drawer-link {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(224, 163, 46, 0.12);
+  border: 1px solid rgba(224, 163, 46, 0.45);
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.cr-drawer-body .cr-field {
+  margin-bottom: 12px;
+}
+
+.cr-drawer-body .cr-select {
+  width: 100%;
+  max-width: none;
+}
+
+@media (max-width: 920px) {
+  /* .cr-app mobile overrides MUST live here (after the base .cr-app rule):
+     on phones the frame unlocks and the page scrolls as a document. */
+  .cr-app {
+    height: auto;
+    overflow: visible;
+    padding: 8px 10px 10px;
+    padding-top: max(8px, calc(env(safe-area-inset-top) + 20px));
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+  .cr-scroll-area {
+    overflow: visible;
+  }
+  .cr-title {
+    font-size: 1rem;
+  }
+  .cr-account-name {
+    display: none;
+  }
+  .cr-chip {
+    font-size: 0.72rem;
+    padding: 2px 8px;
+  }
+  .cr-account-menu {
+    min-width: 210px;
+  }
+}
+
+.cr-empty-note {
+  color: var(--muted);
+  text-align: center;
+  max-width: 420px;
+  line-height: 1.6;
+}
+
+/* ---------- leaderboard (PacClone parity) ---------- */
+.cr-lb-me {
+  background: var(--panel); border: 1px solid var(--accent);
+  border-radius: 10px; padding: 12px 14px; margin-bottom: 14px;
+}
+.cr-lb-me-row {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 6px;
+}
+.cr-lb-me-row:last-child { margin-bottom: 0; }
+.cr-lb-me-label { flex: 1; font-weight: 700; }
+.cr-lb-me-sub { color: var(--muted); font-size: 0.85rem; }
+.cr-lb-me-row-hl { border-color: var(--accent); }
+.cr-stats-row {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  color: var(--muted); font-size: 0.85rem; margin-top: 6px;
+}
+.cr-section-title {
+  margin: 4px 0 10px; font-size: 1rem; font-weight: 700; color: var(--ink);
+}
+.cr-lb-main { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cr-lb-main strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cr-lb-sub { color: var(--muted); font-size: 0.82rem; }
+
+/* Guest signup teaser (PacClone GuestTeaser port) */
+.cr-guest-teaser {
+  border: 1px dashed var(--accent, #2fb3e8);
+  border-radius: 12px;
+  background: rgba(212, 160, 23, 0.08);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center;
+  align-items: center;
+  margin-top: 12px;
+}
+.cr-guest-teaser p {
+  margin: 0;
+  font-size: 0.92rem;
+}
+.cr-guest-teaser-stats {
+  font-weight: 600;
+}
+
+/* History: W/L/D totals + rating sparkline (PacClone parity) */
+.cr-stats-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.cr-spark {
+  margin: 12px 0 4px;
+}
+.cr-spark-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+.cr-spark-svg {
+  width: 100%;
+  height: 60px;
+  display: block;
+}
