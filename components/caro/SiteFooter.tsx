@@ -10,8 +10,8 @@
 import HandoffLink from "./HandoffLink";
 
 const GAMES: Array<{ vi: string; en: string; url: string }> = [
-  { vi: "Cờ Ca-rô", en: "Caro", url: "https://cocaro.synerworlds.com" },
-  { vi: "cờ tướng", en: "Xiangqi", url: "https://cotuong.synerworlds.com" },
+  { vi: "Cờ tướng", en: "Xiangqi", url: "https://cotuong.synerworlds.com" },
+  { vi: "cờ vua", en: "Chess", url: "https://chess.synerworlds.com" },
   {
     vi: "cờ chiếu tướng",
     en: "Vietnamese General Check",
@@ -19,7 +19,22 @@ const GAMES: Array<{ vi: string; en: string; url: string }> = [
   },
   { vi: "cờ gánh", en: "Co Ganh", url: "https://coganh.synerworlds.com" },
   { vi: "cờ nhào", en: "Co Nhao", url: "https://conhao.synerworlds.com" },
+  { vi: "cờ cá ngựa", en: "Ca Ngua", url: "https://cangua.synerworlds.com" },
   { vi: "ô ăn quan", en: "O An Quan", url: "https://oanquan.synerworlds.com" },
+  { vi: "cờ vây", en: "Go", url: "https://covay.synerworlds.com" },
+  { vi: "Sudoku", en: "Sudoku", url: "https://sudoku.synerworlds.com" },
+  {
+    vi: "Cross Words",
+    en: "Cross Words",
+    url: "https://crosswords.synerworlds.com",
+  },
+  {
+    vi: "Word Search",
+    en: "Word Search",
+    url: "https://wordsearch.synerworlds.com",
+  },
+  { vi: "cờ đam", en: "Checkers", url: "https://checkers.synerworlds.com" },
+  { vi: "cờ ca-rô", en: "Caro", url: "https://cocaro.synerworlds.com" },
 ];
 
 const HUB = "https://synerworlds.com";
