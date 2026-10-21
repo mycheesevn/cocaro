@@ -2,6 +2,8 @@
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.3",
+    "livekit-client": "^2.23.0",
+    "livekit-server-sdk": "^2.19.1",
     "next": "^15",
     "react": "^19",
     "react-dom": "^19",
