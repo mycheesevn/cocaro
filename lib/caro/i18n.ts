@@ -218,6 +218,29 @@ export interface Strings {
   ssoError: string;
   recordFailed: string;
   sessionExpired: string;
+  liveTitle: string;
+  liveMenu: string;
+  liveIntro: string;
+  liveYoutubeKey: string;
+  liveFacebookKey: string;
+  liveKeyPh: string;
+  liveKeyNote: string;
+  liveSaveKeys: string;
+  liveNeedKey: string;
+  liveStart: string;
+  liveStop: string;
+  liveStarting: string;
+  liveOnAir: string;
+  livePickTab: string;
+  liveUnsupported: string;
+  liveNeedLogin: string;
+  liveLoginBtn: string;
+  liveNotConfigured: string;
+  liveFailed: string;
+  liveCaptureDenied: string;
+  liveShareEnded: string;
+  liveTagline: string;
+  liveOutroTitle: string;
   roomPromote: string;
   roomPromoMembers: (n: number) => string;
   roomPromoFooter: string;
@@ -481,6 +504,34 @@ export const STR: Record<Lang, Strings> = {
       "⚠️ Couldn't save this game to the server — it was not counted in Statistics.",
     sessionExpired:
       "Your session expired — please sign in again to keep recording results.",
+    liveTitle: "📡 Go Live",
+    liveMenu: "📡 Go Live",
+    liveIntro:
+      "Stream this game tab live to your own YouTube and/or Facebook channel. Create the live stream there first, then paste its stream key here.",
+    liveYoutubeKey: "YouTube stream key",
+    liveFacebookKey: "Facebook stream key",
+    liveKeyPh: "Paste stream key",
+    liveKeyNote:
+      "Keys are kept only on this device. A key is sent to the streaming relay solely to push your broadcast — never stored on our servers.",
+    liveSaveKeys: "Remember keys on this device",
+    liveNeedKey: "Enter at least one stream key.",
+    liveStart: "🔴 Start streaming",
+    liveStop: "⏹ Stop",
+    liveStarting: "Starting…",
+    liveOnAir: "You are LIVE",
+    livePickTab: "Your browser will ask which tab to share — pick this game's tab.",
+    liveUnsupported:
+      "This browser can't capture a tab for streaming. Use Chrome or Edge on a computer.",
+    liveNeedLogin: "Sign in to stream your games live.",
+    liveLoginBtn: "Sign in",
+    liveNotConfigured: "Live streaming is not enabled on the server yet.",
+    liveFailed:
+      "Could not start the stream. Check your stream key and that the live stream is created on YouTube/Facebook, then try again.",
+    liveCaptureDenied:
+      "Could not open the screen-sharing dialog. If no tab picker appeared, allow screen sharing for this site in your browser, then try again.",
+    liveShareEnded: "Tab sharing ended, so the stream stopped.",
+    liveTagline: "Play Gomoku online — free, no install needed",
+    liveOutroTitle: "Thanks for watching!",
     roomPromote: "Promote",
     roomPromoMembers: (n) => `${n} member${n === 1 ? "" : "s"} in room`,
     roomPromoFooter: "👉 Challenge me at cocaro.synerworlds.com",
@@ -739,6 +790,34 @@ export const STR: Record<Lang, Strings> = {
       "⚠️ Không ghi được kết quả lên máy chủ — trận này chưa được tính vào Thống kê.",
     sessionExpired:
       "Phiên đăng nhập đã hết hạn — hãy đăng nhập lại để tiếp tục ghi kết quả.",
+    liveTitle: "📡 Phát trực tiếp",
+    liveMenu: "📡 Phát trực tiếp",
+    liveIntro:
+      "Phát trực tiếp thẻ game này lên kênh YouTube và/hoặc Facebook của bạn. Hãy tạo buổi phát trên YouTube/Facebook trước, rồi dán stream key của nó vào đây.",
+    liveYoutubeKey: "Stream key YouTube",
+    liveFacebookKey: "Stream key Facebook",
+    liveKeyPh: "Dán stream key",
+    liveKeyNote:
+      "Key chỉ lưu trên máy này. Key được gửi tới máy chủ trung chuyển duy nhất để đẩy tín hiệu phát sóng — không lưu trên server của chúng tôi.",
+    liveSaveKeys: "Lưu key trên máy này",
+    liveNeedKey: "Hãy nhập ít nhất một stream key.",
+    liveStart: "🔴 Bắt đầu phát",
+    liveStop: "⏹ Dừng phát",
+    liveStarting: "Đang bắt đầu…",
+    liveOnAir: "Đang PHÁT TRỰC TIẾP",
+    livePickTab: "Trình duyệt sẽ hỏi bạn muốn chia sẻ thẻ nào — hãy chọn thẻ của game này.",
+    liveUnsupported:
+      "Trình duyệt này không quay được thẻ để phát trực tiếp. Hãy dùng Chrome hoặc Edge trên máy tính.",
+    liveNeedLogin: "Đăng nhập để phát trực tiếp ván cờ của bạn.",
+    liveLoginBtn: "Đăng nhập",
+    liveNotConfigured: "Tính năng phát trực tiếp chưa được bật trên máy chủ.",
+    liveFailed:
+      "Không bắt đầu phát được. Kiểm tra lại stream key và chắc chắn buổi phát đã được tạo trên YouTube/Facebook, rồi thử lại.",
+    liveCaptureDenied:
+      "Không mở được hộp thoại chọn thẻ chia sẻ. Nếu bạn không thấy hộp thoại nào hiện lên, hãy cấp quyền chia sẻ màn hình cho trang này trong trình duyệt rồi thử lại.",
+    liveShareEnded: "Bạn đã ngừng chia sẻ thẻ nên buổi phát đã dừng.",
+    liveTagline: "Chơi cờ ca-rô miễn phí — không cần cài đặt",
+    liveOutroTitle: "Cảm ơn bạn đã xem!",
     roomPromote: "Quảng bá",
     roomPromoMembers: (n) => `Phòng có ${n} thành viên`,
     roomPromoFooter: "👉 Thách đấu ngay tại cocaro.synerworlds.com",
