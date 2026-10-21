@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { CaroGame, type TcMs } from "./CaroGame";
 import SiteFooter from "./SiteFooter";
 import { LEVELS } from "@/lib/caro/engineApi";
@@ -23,6 +23,16 @@ import { CvCView } from "./CvCView";
 import { LibraryView } from "./LibraryView";
 import { AuthModal } from "./AuthModal";
 import { ProfileModal } from "./ProfileModal";
+import dynamic from "next/dynamic";
+import { LiveOverlay, type LivePhase } from "./LiveOverlay";
+import type { LiveBroadcaster, LiveDestination } from "@/lib/live/client";
+
+// Lazy: pulls in livekit-client only when the user opens Go Live, keeping
+// the main bundle lean for everyone who never streams.
+const LiveStreamModal = dynamic(
+  () => import("./LiveStreamModal").then((m) => m.LiveStreamModal),
+  { ssr: false }
+);
 import { isMuted, setMuted } from "@/lib/caro/sound";
 import { PushSettings } from "./PushSettings";
 import { QuestsView } from "./QuestsView";
@@ -186,6 +196,79 @@ export function AppShell() {
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   // Auth modal (gear menu: Log in / Sign up) — mode "in" or "up", null = closed.
   const [authOpen, setAuthOpen] = useState<null | "in" | "up">(null);
+  // 📡 Go Live modal (stream the game tab to YouTube/Facebook via LiveKit).
+  const [liveOpen, setLiveOpen] = useState(false);
+  // The broadcaster lives here (not in the modal) so the stream survives
+  // the modal closing and the page can switch into stream mode
+  // (LiveOverlay brand bar + intro/outro cards).
+  const [livePhase, setLivePhase] = useState<LivePhase | null>(null);
+  const [liveStartedAt, setLiveStartedAt] = useState(0);
+  const [liveNotice, setLiveNotice] = useState<string | null>(null);
+  const liveBcRef = useRef<LiveBroadcaster | null>(null);
+  const liveTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  const liveClearTimers = () => {
+    liveTimersRef.current.forEach(clearTimeout);
+    liveTimersRef.current = [];
+  };
+
+  const endLiveNow = async (fromShareEnd: boolean) => {
+    liveClearTimers();
+    const bc = liveBcRef.current;
+    liveBcRef.current = null;
+    setLivePhase(null);
+    if (bc) await bc.stop();
+    if (fromShareEnd) {
+      setLiveNotice(STR[lang].liveShareEnded);
+      liveTimersRef.current.push(
+        setTimeout(() => setLiveNotice(null), 5000)
+      );
+    }
+  };
+
+  const handleLiveStart = async (destinations: LiveDestination[]) => {
+    if (liveBcRef.current) return;
+    const { LiveBroadcaster } = await import("@/lib/live/client");
+    const bc = new LiveBroadcaster();
+    liveBcRef.current = bc;
+    bc.onShareEnded = () => {
+      void endLiveNow(true);
+    };
+    try {
+      await bc.start(destinations);
+    } catch (e) {
+      liveBcRef.current = null;
+      throw e;
+    }
+    setLiveStartedAt(Date.now());
+    setLivePhase("intro");
+    setLiveOpen(false);
+    liveTimersRef.current.push(
+      setTimeout(() => {
+        setLivePhase((p) => (p === "intro" ? "live" : p));
+      }, 2000)
+    );
+  };
+
+  const handleLiveStop = () => {
+    if (!liveBcRef.current) return;
+    liveClearTimers();
+    setLivePhase("outro");
+    liveTimersRef.current.push(
+      setTimeout(() => {
+        void endLiveNow(false);
+      }, 2000)
+    );
+  };
+
+  useEffect(
+    () => () => {
+      liveClearTimers();
+      void liveBcRef.current?.stop();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
   // Profile modal (identity menu: 👤 Hồ sơ) — mirrors PacClone's position.
   const [profileOpen, setProfileOpen] = useState(false);
   const [settingsExpanded, setSettingsExpanded] = useState(false);
@@ -862,6 +945,20 @@ export function AppShell() {
                   </a>
                 </div>
               </section>
+              <section>
+                <h2>{s.liveTitle}</h2>
+                <div className="cr-drawer-modes">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      setLiveOpen(true);
+                    }}
+                  >
+                    {s.liveMenu}
+                  </button>
+                </div>
+              </section>
               {installPrompt && (
                 <section>
                   <div className="cr-drawer-modes">
@@ -1029,10 +1126,29 @@ export function AppShell() {
           onClose={() => setAuthOpen(null)}
         />
       )}
+      {liveOpen && (
+        <LiveStreamModal
+          lang={lang}
+          onClose={() => setLiveOpen(false)}
+          onRequireLogin={() => {
+            setLiveOpen(false);
+            setAuthOpen("in");
+          }}
+          onStart={handleLiveStart}
+        />
+      )}
+      {livePhase && (
+        <LiveOverlay
+          lang={lang}
+          phase={livePhase}
+          startedAt={liveStartedAt}
+          onStop={handleLiveStop}
+        />
+      )}
       {profileOpen && (
         <ProfileModal lang={lang} onClose={() => setProfileOpen(false)} />
       )}
-      {welcomeMsg && <div className="cr-toast">{welcomeMsg}</div>}      {declinedToast && <div className="cr-toast">{declinedToast}</div>}      {recordMsg && <div className="cr-toast">{recordMsg}</div>}      {expiredMsg && <div className="cr-toast">{expiredMsg}</div>}
+      {welcomeMsg && <div className="cr-toast">{welcomeMsg}</div>}      {declinedToast && <div className="cr-toast">{declinedToast}</div>}      {recordMsg && <div className="cr-toast">{recordMsg}</div>}      {expiredMsg && <div className="cr-toast">{expiredMsg}</div>}      {liveNotice && <div className="cr-toast">{liveNotice}</div>}
       {incomingChallenge && (
         <div className="cr-modal-root" role="dialog" aria-modal="true">
           <div className="cr-modal">
