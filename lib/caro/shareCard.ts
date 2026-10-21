@@ -80,8 +80,11 @@ export async function shareCard(
   fileName = "caro-result.png"
 ) {
   const file = new File([blob], fileName, { type: "image/png" });
+  // The shared text itself must carry the (canonical) URL — some share
+  // targets drop the separate `url` field when files are attached.
+  const shareText = text.includes(url) ? text : `${text} ${url}`;
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    await navigator.share({ files: [file], title, text, url });
+    await navigator.share({ files: [file], title, text: shareText, url });
     return "shared";
   }
   // Fallback: download + copy link
@@ -90,7 +93,7 @@ export async function shareCard(
   a.download = fileName;
   a.click();
   try {
-    await navigator.clipboard.writeText(`${text} ${url}`);
+    await navigator.clipboard.writeText(shareText);
   } catch {
     /* clipboard unavailable */
   }

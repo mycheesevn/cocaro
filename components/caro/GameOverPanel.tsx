@@ -67,9 +67,14 @@ export function GameOverPanel({
             ? `Thắng máy cấp ${level} · ${moves} nước đi`
             : `Beat level ${level} · ${moves} moves`,
         appName: "Cờ Ca-rô · Caro",
-        appUrl: window.location.origin,
+        appUrl: "cocaro.synerworlds.com",
       });
-      await shareCard(blob, headline, headline, window.location.origin);
+      await shareCard(
+        blob,
+        headline,
+        `${headline} https://cocaro.synerworlds.com`,
+        "https://cocaro.synerworlds.com"
+      );
     } catch {
       /* share cancelled or failed */
     } finally {

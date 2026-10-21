@@ -144,13 +144,13 @@ export function PuzzleView({ lang }: { lang: Lang }) {
       headline: lang === "vi" ? "🧩 Giải đố thành công!" : "🧩 Puzzle solved!",
       subline: puzzle[lang === "vi" ? "titleVi" : "titleEn"],
       appName: "✖️ Cờ Ca-rô",
-      appUrl: window.location.origin,
+      appUrl: "cocaro.synerworlds.com",
     });
     const url = await shareCard(
       blob,
       lang === "vi" ? "Đố Cờ Ca-rô" : "Gomoku Puzzle",
-      puzzle[lang === "vi" ? "titleVi" : "titleEn"],
-      window.location.href,
+      `${puzzle[lang === "vi" ? "titleVi" : "titleEn"]} https://cocaro.synerworlds.com`,
+      "https://cocaro.synerworlds.com",
       "caro-puzzle.png",
     );
     setShareUrl(url);

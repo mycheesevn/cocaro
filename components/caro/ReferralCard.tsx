@@ -16,7 +16,7 @@ export function ReferralCard({ lang }: { lang: Lang }) {
   }, []);
 
   if (!code) return null;
-  const link = `${window.location.origin}/?ref=${code}`;
+  const link = `https://cocaro.synerworlds.com/?ref=${code}`;
 
   const copy = async () => {
     try {
@@ -33,7 +33,7 @@ export function ReferralCard({ lang }: { lang: Lang }) {
       try {
         await navigator.share({
           title: s.referralTitle,
-          text: s.referralDesc,
+          text: `${s.referralDesc} ${link}`,
           url: link,
         });
         return;

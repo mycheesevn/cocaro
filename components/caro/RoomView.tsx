@@ -628,7 +628,7 @@ function RoomDetail({
     if (promoting) return;
     setPromoting(true);
     try {
-      const link = `${window.location.origin}/?room=${room.code}`;
+      const link = `https://cocaro.synerworlds.com/?room=${room.code}`;
       const canvas = renderRoomPromoCard({
         roomName: room.name,
         code: room.code,
@@ -640,7 +640,7 @@ function RoomDetail({
       await shareCard(
         blob,
         room.name,
-        `${room.name}\n${STR[lang].roomPromoCodeLabel}: ${room.code}`,
+        `${room.name}\n${STR[lang].roomPromoCodeLabel}: ${room.code}\n${link}`,
         link,
         `phong-${room.code}.png`
       );
@@ -706,7 +706,7 @@ function RoomDetail({
           <button
             type="button"
             className="cr-btn cr-btn-sm"
-            onClick={() => copyText(`${window.location.origin}/?room=${room.code}`, "link")}
+            onClick={() => copyText(`https://cocaro.synerworlds.com/?room=${room.code}`, "link")}
           >
             {copied === "link" ? (lang === "vi" ? "Đã chép!" : "Copied!") : `🔗 ${lang === "vi" ? "Chép link mời" : "Copy invite link"}`}
           </button>

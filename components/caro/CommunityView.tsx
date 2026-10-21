@@ -301,7 +301,7 @@ function SolveView({
   };
 
   const doShare = async () => {
-    const url = `${window.location.origin}/?cpuzzle=${card.id}`;
+    const url = `https://cocaro.synerworlds.com/?cpuzzle=${card.id}`;
     try {
       await navigator.clipboard.writeText(url);
       setXpMsg(vi ? "Đã chép liên kết!" : "Link copied!");

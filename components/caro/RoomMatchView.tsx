@@ -436,7 +436,7 @@ export function RoomMatchView({
       match.reason ? ` (${reasonLabel(match.reason, lang)})` : ""
     } · ${plyCount} ${lang === "vi" ? "nước" : "plies"}${
       roomCode
-        ? ` · ${lang === "vi" ? "Mã phòng" : "Room code"}: ${roomCode} — ${window.location.origin}/?room=${roomCode}`
+        ? ` · ${lang === "vi" ? "Mã phòng" : "Room code"}: ${roomCode} — https://cocaro.synerworlds.com/?room=${roomCode}`
         : ""
     }`;
     try {

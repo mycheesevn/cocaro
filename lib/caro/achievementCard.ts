@@ -182,5 +182,10 @@ export async function shareAchievement(
           data.playerTitle ?? ""
         } · ${data.rating ?? 0} Elo · ${levelLabel} ${data.level ?? 1}`
       : data.title;
-  return shareCard(blob, data.title, text, `${window.location.origin}/`);
+  return shareCard(
+    blob,
+    data.title,
+    `${text} https://cocaro.synerworlds.com`,
+    "https://cocaro.synerworlds.com"
+  );
 }
