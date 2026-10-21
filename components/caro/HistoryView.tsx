@@ -127,7 +127,7 @@ export function HistoryView({ lang }: { lang: Lang }) {
         lang === "vi"
           ? `${ucis.length} nước · ${date}`
           : `${ucis.length} moves · ${date}`,
-      shareUrl: window.location.origin,
+      shareUrl: "https://cocaro.synerworlds.com",
     });
   };
 

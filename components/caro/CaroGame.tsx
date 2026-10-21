@@ -237,7 +237,7 @@ export function CaroGame({
         lang === "vi"
           ? `${st.log.length} nước · Cấp ${level}`
           : `${st.log.length} moves · Level ${level}`,
-      shareUrl: window.location.origin,
+      shareUrl: "https://cocaro.synerworlds.com",
     });
   }, [lang, level, playerColor]);
 

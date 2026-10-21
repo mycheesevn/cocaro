@@ -141,7 +141,7 @@ export async function exportReplayVideo(input: ReplayVideoInput): Promise<File> 
     onProgress,
   } = input;
   const s = STR[lang];
-  const site = typeof window !== "undefined" ? window.location.origin : "";
+  const site = "https://cocaro.synerworlds.com";
 
   const canvas = document.createElement("canvas");
   canvas.width = W;

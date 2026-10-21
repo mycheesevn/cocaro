@@ -27,6 +27,23 @@ interface Props {
   onClose: () => void;
 }
 
+const CANONICAL_ORIGIN = "https://cocaro.synerworlds.com";
+
+/** Rebase any supplied share URL onto the canonical host, preserving
+ *  any deep-link path/query/hash (e.g. room codes) it carries. */
+function canonicalShareUrl(raw?: string): string {
+  if (!raw) return CANONICAL_ORIGIN;
+  try {
+    const parsed = new URL(raw, CANONICAL_ORIGIN);
+    if (parsed.pathname === "/" && !parsed.search && !parsed.hash) {
+      return CANONICAL_ORIGIN;
+    }
+    return `${CANONICAL_ORIGIN}${parsed.pathname}${parsed.search}${parsed.hash}`;
+  } catch {
+    return CANONICAL_ORIGIN;
+  }
+}
+
 type Phase = "ready" | "recording" | "done" | "error";
 
 /** Export a game replay as a shareable video clip (MP4 on Safari, WebM on Chrome). */
@@ -133,20 +150,23 @@ export function VideoExportModal({ lang, game, onClose }: Props) {
     if (!file || busy) return;
     setBusy(true);
     try {
-      const url = game.shareUrl ?? window.location.origin;
+      const url = canonicalShareUrl(game.shareUrl);
+      // The shared text itself must carry the (canonical) URL — some
+      // share targets drop the separate `url` field when files are
+      // attached (same pattern as lib/caro/shareCard.ts shareCard()).
+      const baseText = `${game.title}\n${game.subtitle}`;
+      const shareText = baseText.includes(url) ? baseText : `${baseText}\n${url}`;
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           files: [file],
           title: game.title,
-          text: `${game.title}\n${game.subtitle}`,
+          text: shareText,
           url,
         });
       } else {
         downloadFile();
         try {
-          await navigator.clipboard.writeText(
-            `${game.title} ${game.subtitle} ${url}`
-          );
+          await navigator.clipboard.writeText(shareText.replace(/\n/g, " "));
         } catch {
           /* clipboard unavailable */
         }
