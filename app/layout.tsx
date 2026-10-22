@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Suspense } from "react";
 import "./globals.css";
+import { PageViewTracker } from "@/components/PageViewTracker";
 import { AuthProvider } from "@/components/caro/AuthProvider";
 import { ICON_VERSION } from "@/lib/caro/iconSvg";
 
@@ -55,6 +57,11 @@ export default function RootLayout({
         )}
       </head>
       <body>
+        {GA_ID && (
+          <Suspense fallback={null}>
+            <PageViewTracker gaId={GA_ID} />
+          </Suspense>
+        )}
         <AuthProvider>
           {children}
         </AuthProvider>
