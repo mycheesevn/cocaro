@@ -3,6 +3,14 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   async redirects() {
     return [
+      // Any *.vercel.app host permanently redirects to the canonical
+      // host, preserving path + query (old links keep working).
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: ".*\\.vercel\\.app" }],
+        destination: "https://cocaro.synerworlds.com/:path*",
+        permanent: true,
+      },
       // The blog lives on the SynerWorlds hub — permanent redirects
       // (existing /blog routes are left in place, like Chess/PacClone;
       // redirects take precedence so old links keep working). No Caro
