@@ -20,6 +20,20 @@ export const metadata: Metadata = {
     description: "Chơi cờ ca-rô với máy 12 cấp độ. Song ngữ Việt/Anh, miễn phí.",
     type: "website",
     url: SITE_URL,
+    images: [
+      {
+        url: `${SITE_URL}/opengraph-image`,
+        width: 1200,
+        height: 630,
+        alt: "✖️ Cờ Ca-rô",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "✖️ Cờ Ca-rô",
+    description: "Chơi cờ ca-rô với máy 12 cấp độ. Song ngữ Việt/Anh, miễn phí.",
+    images: [`${SITE_URL}/opengraph-image`],
   },
   alternates: { canonical: SITE_URL },
   // Versioned icon URLs (see ICON_VERSION in lib/caro/iconSvg):
