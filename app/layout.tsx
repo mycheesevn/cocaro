@@ -45,6 +45,30 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  name: "Cờ Ca-rô — Gomoku",
+  url: SITE_URL,
+  applicationCategory: "Game",
+  gamePlatform: "Web browser",
+  operatingSystem: "Any (web browser)",
+  inLanguage: ["vi", "en"],
+  isAccessibleForFree: true,
+  genre: ["Board game", "Strategy"],
+  playMode: ["SinglePlayer", "MultiPlayer"],
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "SynerWorlds",
+    url: "https://synerworlds.com",
+  },
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -71,6 +95,10 @@ export default function RootLayout({
         )}
       </head>
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         {GA_ID && (
           <Suspense fallback={null}>
             <PageViewTracker gaId={GA_ID} />
