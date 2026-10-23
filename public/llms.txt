@@ -1,0 +1,15 @@
+# Gomoku (Cờ Ca-rô) — SynerWorlds
+
+> Gomoku (Caro) — five in a row on 10x10, 15x15 and 20x20 boards.
+
+Free to play in the browser — no install, no gambling. Bilingual Vietnamese–English. Part of SynerWorlds: 15 free browser board & puzzle games.
+
+## Play
+
+- [Gomoku — play free online](https://cocaro.synerworlds.com)
+
+## More
+
+- [All 15 SynerWorlds games](https://synerworlds.com/games)
+- [Gomoku guides and articles](https://synerworlds.com/blog?cat=caro)
+- [SynerWorlds home](https://synerworlds.com)
