@@ -9,6 +9,7 @@
 
 import HandoffLink from "./HandoffLink";
 import FooterGames from "./FooterGames";
+import { STR } from "@/lib/caro/i18n";
 
 const GAMES: Array<{ vi: string; en: string; url: string }> = [
   { vi: "Cờ tướng", en: "Xiangqi", url: "https://cotuong.synerworlds.com" },
@@ -36,6 +37,8 @@ const GAMES: Array<{ vi: string; en: string; url: string }> = [
   },
   { vi: "cờ đam", en: "Checkers", url: "https://checkers.synerworlds.com" },
   { vi: "cờ ca-rô", en: "Caro", url: "https://cocaro.synerworlds.com" },
+  { vi: "cờ úp 🃏", en: "Dark Xiangqi 🃏", url: "https://cotuongup.synerworlds.com" },
+  { vi: "Nonogram", en: "Nonogram", url: "https://nonogram.synerworlds.com" },
 ];
 
 const HUB = "https://synerworlds.com";
@@ -48,6 +51,7 @@ export default function SiteFooter({
   className: string;
 }) {
   const en = lang === "en";
+  const s = STR[lang];
   const q = en ? "?lang=en" : "";
   const linkStyle = { color: "inherit" } as const;
   return (
@@ -64,9 +68,7 @@ export default function SiteFooter({
     >
       <div style={{ fontWeight: 600 }}>
         <HandoffLink href={HUB} newTab style={linkStyle}>
-          {en
-            ? "SynerWorlds - One account, every world."
-            : "SynerWorlds - Một tài khoản, mọi bàn cờ."}
+          {s.footerBrand}
         </HandoffLink>
       </div>
       <div>
@@ -74,24 +76,22 @@ export default function SiteFooter({
       </div>
       <div>
         <HandoffLink href={`${HUB}/terms${q}`} newTab style={linkStyle}>
-          {en ? "Terms of Service" : "Điều khoản dịch vụ"}
+          {s.footerTerms}
         </HandoffLink>
         {" · "}
         <HandoffLink href={`${HUB}/privacy${q}`} newTab style={linkStyle}>
-          {en ? "Privacy Policy" : "Chính sách bảo mật"}
+          {s.footerPrivacy}
         </HandoffLink>
         {" · "}
         <HandoffLink href={`${HUB}/contact${q}`} newTab style={linkStyle}>
-          {en ? "Contact" : "Liên hệ"}
+          {s.footerContact}
         </HandoffLink>
         {" · "}
         <HandoffLink href={`${HUB}/blog${q}`} newTab style={linkStyle}>
           Blog
         </HandoffLink>
         {" · "}
-        {en
-          ? "© SynerWork Inc. All rights reserved."
-          : "© SynerWork Inc. Bảo lưu mọi quyền."}
+        {s.footerRights}
       </div>
     </footer>
   );
